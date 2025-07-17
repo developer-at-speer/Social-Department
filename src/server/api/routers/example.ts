@@ -5,7 +5,7 @@ import {
 } from "~/server/api/trpc";
 
 export const exampleRouter = createTRPCRouter({
-  list: publicProcedure.query(({ ctx }) => {
+  list: publicProcedure.query(({ _ctx }) => {
     const exampleMessageCount = 10;
 
     const messages = Array.from(
@@ -21,7 +21,7 @@ export const exampleRouter = createTRPCRouter({
     };
   }),
 
-  listSecret: authenticatedProcedure.query(({ ctx }) => {
+  listSecret: authenticatedProcedure.query(({ _ctx }) => {
     const exampleMessageCount = 10;
 
     const messages = Array.from(

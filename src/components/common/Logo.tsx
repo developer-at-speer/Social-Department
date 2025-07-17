@@ -4,9 +4,7 @@ import React from 'react';
  * A reusable Logo component for SocialDept.AI.
  * It accepts standard SVG props like `className` for easy styling with Tailwind CSS.
  */
-interface LogoProps extends React.SVGProps<SVGSVGElement> {}
-
-export const Logo = (props: LogoProps) => {
+export const Logo = (props: React.SVGProps<SVGSVGElement>) => {
   return (
     <svg
       width="180"
