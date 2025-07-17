@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "T3 SaaS Boilerplate",
+  title: "Social Department",
   description:
     "A modern, production-ready SaaS boilerplate with Next.js, TypeScript, tRPC, Clerk auth, and more",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
