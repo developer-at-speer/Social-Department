@@ -8,10 +8,12 @@
  */
 import { auth } from "@clerk/nextjs/server";
 import { initTRPC, TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import { users } from "../db/schema";
 
 /**
  * 1. CONTEXT
@@ -129,9 +131,31 @@ const authMiddleware = t.middleware(async ({ ctx, next }) => {
     });
   }
 
+  const user =
+    (await ctx.db?.query.users.findFirst({
+      where: eq(users.clerkId, userId),
+    })) ??
+    (await ctx.db
+      ?.insert(users)
+      .values({
+        clerkId: userId,
+      })
+      .returning());
+
+  const userData = Array.isArray(user) ? user[0] : user;
+
+  if (!userData) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      cause: "User is not authorized to access this resource.",
+    });
+  }
+
   return next({
     ctx: {
+      ...ctx,
       auth: ctx.auth,
+      user: userData,
     },
   });
 });
