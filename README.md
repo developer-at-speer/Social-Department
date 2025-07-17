@@ -1,29 +1,23 @@
-# Create T3 App
+# Submission for Social Department
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This repository contains a full-stack, type-safe web application built as a submission for the Social Department's take-home assessment. The project is bootstrapped with the modern T3 Stack and adheres to the specifications provided, utilizing Next.js 15 with the App Router, server-side logic with Server Actions, and a complete authentication flow.
 
-## What's next? How do I make an app with this?
+The core of this application demonstrates best practices in modern web development, including strict TypeScript, environment variable management, and a clean, component-based architecture.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Features
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+*   **Full-Stack Type Safety**: End-to-end type safety from the database to the front-end, with a strict `noImplicitAny` policy.
+*   **User Authentication**: Secure sign-up, sign-in, and user management powered by [Clerk](https://clerk.com/).
+*   **Type-Safe Server Actions**: Data mutations and queries are handled by Next.js Server Actions, validated with [Zod](https://zod.dev/), and managed with the `next-safe-action` library for robust error handling and type inference.
+*   **Modern UI**: A clean and responsive user interface built with [Shadcn/ui](https://ui.shadcn.com/) and styled with [Tailwind CSS](https://tailwindcss.com/).
+*   **Scalable Database ORM**: T3 Stack offers flexibility in managing SQL database interactions with modern ORMs [Drizzle](https://orm.drizzle.team/) or [Prisma](https://prisma.io/). In this project, we showcase Drizzle integrated with [Neon Postgres](https://neon.com/).
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+# All requirements mentioned in the doc were met.
 
-## Learn More
+## Example Showcase
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+For a simple demonstration of the functionality, you can run the project locally with your API keys and database URL, and then login with your preferred provider and visit the Dashboard (`/dashboard`). Here, you can view some personal information, and add, view, and delete TV shows from associated with your user account.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+Notice that if you try to visit the dashboard without being logged in, you are not permitted to do so.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+For more information about how tRPC, Drizzle, and Clerk work, you can start by checking the files in `src/server/`, or the React components in `src/components`.
