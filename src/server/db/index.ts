@@ -1,5 +1,5 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
 
 import { env } from "~/env";
 import * as schema from "./schema";
@@ -11,7 +11,7 @@ let dbClient;
 
 // Only try to connect if the DATABASE_URL is provided
 if (env.DATABASE_URL) {
-  const client = postgres(env.DATABASE_URL, { prepare: false });
+  const client = neon(env.DATABASE_URL);
   dbClient = drizzle(client, { schema });
 } else {
   // If no DATABASE_URL is set, we'll log a warning.
