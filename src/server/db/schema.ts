@@ -2,7 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { index, pgTableCreator, primaryKey } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import type { PgColumnsBuilders } from "drizzle-orm/pg-core/columns/all";
 
@@ -53,7 +53,7 @@ export const shows = createTable(
 
     createdBy: referenceUserHelper(d),
   }),
-  (t) => [index("name_idx").on(t.name)],
+  (t) => [index("show_name_idx").on(t.name)],
 );
 
 export const showEpisodes = createTable(
@@ -71,7 +71,7 @@ export const showEpisodes = createTable(
     showId: d.integer().references(() => shows.id),
     createdBy: referenceUserHelper(d),
   }),
-  (t) => [index("title_idx").on(t.title)],
+  (t) => [index("show_episode_title_idx").on(t.title)],
 );
 
 export const teams = createTable(
@@ -85,7 +85,7 @@ export const teams = createTable(
 
     createdBy: referenceUserHelper(d),
   }),
-  (t) => [index("name_idx").on(t.name)],
+  (t) => [index("team_name_idx").on(t.name)],
 );
 
 export const campaigns = createTable(
@@ -109,7 +109,10 @@ export const campaigns = createTable(
 
     createdBy: referenceUserHelper(d),
   }),
-  (t) => [index("show_id_idx").on(t.showId), index("team_id_idx").on(t.teamId)],
+  (t) => [
+    index("campaign_show_id_idx").on(t.showId),
+    index("campaign_team_id_idx").on(t.teamId),
+  ],
 );
 
 export const campaignClips = createTable("campaign_clip", (d) => ({
@@ -125,29 +128,69 @@ export const campaignClips = createTable("campaign_clip", (d) => ({
   createdBy: referenceUserHelper(d),
 }));
 
+export const usersToTeams = createTable(
+  "users_to_teams",
+  (d) => ({
+    userId: d.integer().references(() => users.id),
+    teamId: d.integer().references(() => teams.id),
+  }),
+  (t) => [primaryKey({ columns: [t.userId, t.teamId] })],
+);
+
 /**
  * Relationships
  *
  * These provide convenient access to associated data.
  */
 
-export const usersRelations = relations(users, ({ many }) => ({
-  teams: many(teams),
-  campaigns: many(campaigns),
+export const usersToTeamsRelations = relations(usersToTeams, ({ one }) => ({
+  user: one(users, {
+    fields: [usersToTeams.userId],
+    references: [users.id],
+  }),
+  team: one(teams, {
+    fields: [usersToTeams.teamId],
+    references: [teams.id],
+  }),
 }));
 
 export const teamsRelations = relations(teams, ({ many }) => ({
-  campaigns: many(campaigns),
-  users: many(users),
+  campaigns: many(campaigns, { relationName: "team_campaigns" }),
 }));
 
 export const campaignRelations = relations(campaigns, ({ one, many }) => ({
-  show: one(shows, { fields: [campaigns.showId], references: [shows.id] }),
-  team: one(teams, { fields: [campaigns.teamId], references: [teams.id] }),
-  clips: many(campaignClips),
+  show: one(shows, {
+    fields: [campaigns.showId],
+    references: [shows.id],
+    relationName: "show_campaigns",
+  }),
+  team: one(teams, {
+    fields: [campaigns.teamId],
+    references: [teams.id],
+    relationName: "team_campaigns",
+  }),
+  clips: many(campaignClips, {
+    relationName: "campaign_clips",
+  }),
+}));
+
+export const campaignClipsRelations = relations(campaignClips, ({ one }) => ({
+  campaign: one(campaigns, {
+    fields: [campaignClips.campaignId],
+    references: [campaigns.id],
+    relationName: "campaign_clips",
+  }),
+}));
+
+export const episodeRelations = relations(showEpisodes, ({ one }) => ({
+  show: one(shows, {
+    fields: [showEpisodes.showId],
+    references: [shows.id],
+    relationName: "show_episodes",
+  }),
 }));
 
 export const showRelations = relations(shows, ({ many }) => ({
-  episodes: many(showEpisodes),
-  campaigns: many(campaigns),
+  episodes: many(showEpisodes, { relationName: "show_episodes" }),
+  campaigns: many(campaigns, { relationName: "show_campaigns" }),
 }));
