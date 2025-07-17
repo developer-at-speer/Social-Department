@@ -39,16 +39,17 @@ export function CreateShowCard() {
   });
 
   return (
-    <Card>
+    <Card className="border-white/20 bg-white/10 text-white backdrop-blur-sm">
       <CardHeader>
         <CardTitle>Create a new show</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-white/80">
           Create a new show to start creating campaigns and episodes.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <section className="space-y-3">
           <Input
+            className="bg-white/60"
             placeholder="Show name"
             value={showName}
             onChange={(e) => setShowName(e.target.value)}
