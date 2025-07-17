@@ -3,13 +3,12 @@ import { SignIn } from "@clerk/nextjs";
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-700 via-purple-700 to-fuchsia-700">
+    <div className="flex justify-center">
       <div className="w-full max-w-md">
         <SignIn
           appearance={{
             elements: {
-              formButtonPrimary: 
-                "bg-yellow-400 text-black hover:bg-yellow-500",
+              formButtonPrimary: "bg-yellow-400 text-black hover:bg-yellow-500",
               card: "bg-white",
               headerTitle: "text-gray-900",
               headerSubtitle: "text-gray-600",
