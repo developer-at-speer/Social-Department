@@ -5,9 +5,11 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "~/components/common/Logo";
 import { Button } from "~/components/ui/button";
+import { useAuth, UserButton } from "@clerk/nextjs";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isSignedIn, isLoaded } = useAuth();
 
   const navLinks = [
     { href: "#features", label: "Features" },
@@ -37,12 +39,30 @@ export function Header() {
         </nav>
         
         <div className="hidden md:flex items-center space-x-2">
-          <Button variant="outline" className="text-black border-white hover:bg-white/20" asChild>
-            <Link href="/sign-in" className="text-black">Sign In</Link>
-          </Button>
-          <Button variant="default" className="bg-yellow-400 text-black hover:bg-yellow-500" asChild>
-            <Link href="/sign-up">Get Started</Link>
-          </Button>
+          {isLoaded && isSignedIn ? (
+            <>
+              <Button variant="outline" className="text-white border-white hover:bg-white/20" asChild>
+                <Link href="/dashboard" className="text-white">Dashboard</Link>
+              </Button>
+              <UserButton 
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    userButtonAvatarBox: "w-8 h-8"
+                  }
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <Button variant="outline" className="text-black border-white hover:bg-white/20" asChild>
+                <Link href="/sign-in" className="text-black">Sign In</Link>
+              </Button>
+              <Button variant="default" className="bg-yellow-400 text-black hover:bg-yellow-500" asChild>
+                <Link href="/sign-up">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
         
         <button
@@ -70,12 +90,33 @@ export function Header() {
               </Link>
             ))}
             <div className="border-t border-border/40 pt-4 space-y-2">
-               <Button variant="outline" className="w-full text-white border-white hover:bg-white/20" asChild>
-                  <Link href="/sign-in" className="text-white">Sign In</Link>
-               </Button>
-               <Button variant="default" className="w-full bg-yellow-400 text-black hover:bg-yellow-500" asChild>
-                  <Link href="/sign-up">Get Started</Link>
-               </Button>
+              {isLoaded && isSignedIn ? (
+                <>
+                  <Button variant="outline" className="w-full text-white border-white hover:bg-white/20" asChild>
+                    <Link href="/dashboard" className="text-white" onClick={() => setMobileMenuOpen(false)}>
+                      Dashboard
+                    </Link>
+                  </Button>
+                  <Link href="/user-profile" onClick={() => setMobileMenuOpen(false)} className="block text-center">
+                    <Button variant="default" className="w-full bg-yellow-400 text-black hover:bg-yellow-500">
+                      Profile
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" className="w-full text-white border-white hover:bg-white/20" asChild>
+                    <Link href="/sign-in" className="text-white" onClick={() => setMobileMenuOpen(false)}>
+                      Sign In
+                    </Link>
+                  </Button>
+                  <Button variant="default" className="w-full bg-yellow-400 text-black hover:bg-yellow-500" asChild>
+                    <Link href="/sign-up" onClick={() => setMobileMenuOpen(false)}>
+                      Get Started
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
