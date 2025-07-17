@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
+import { Providers } from "./_components/Providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -9,7 +10,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "T3 SaaS Boilerplate",
-  description: "A modern, production-ready SaaS boilerplate with Next.js, TypeScript, tRPC, Clerk auth, and more",
+  description:
+    "A modern, production-ready SaaS boilerplate with Next.js, TypeScript, tRPC, Clerk auth, and more",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -21,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`font-sans ${inter.variable}`}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
