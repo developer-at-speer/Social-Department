@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
-
 import { api } from "~/trpc/react";
 
 export function LatestPost() {
-  const [latestPost] = api.post.getLatest.useSuspenseQuery();
+  // Use a regular query instead of a suspense query
+  const { data: latestPost, isLoading, error } = api.post.getLatest.useQuery();
 
   const utils = api.useUtils();
   const [name, setName] = useState("");
+  
   const createPost = api.post.create.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
@@ -16,9 +17,15 @@ export function LatestPost() {
     },
   });
 
+  if (error) {
+    return <p style={{ color: 'red' }}>Error: {error.message}</p>;
+  }
+
   return (
     <div className="w-full max-w-xs">
-      {latestPost ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : latestPost ? (
         <p className="truncate">Your most recent post: {latestPost.name}</p>
       ) : (
         <p>You have no posts yet.</p>

@@ -4,15 +4,23 @@ import postgres from "postgres";
 import { env } from "~/env";
 import * as schema from "./schema";
 
-/**
- * Cache the database connection in development. This avoids creating a new connection on every HMR
- * update.
- */
-const globalForDb = globalThis as unknown as {
-  conn: postgres.Sql | undefined;
-};
+// ⬇️ MODIFICATION START ⬇️
 
-const conn = globalForDb.conn ?? postgres(env.DATABASE_URL);
-if (env.NODE_ENV !== "production") globalForDb.conn = conn;
+// Declare the client variable which could be a drizzle instance or null
+let dbClient;
 
-export const db = drizzle(conn, { schema });
+// Only try to connect if the DATABASE_URL is provided
+if (env.DATABASE_URL) {
+  const client = postgres(env.DATABASE_URL, { prepare: false });
+  dbClient = drizzle(client, { schema });
+} else {
+  // If no DATABASE_URL is set, we'll log a warning.
+  // The app will run, but any database queries will fail.
+  console.warn("⚠️ DATABASE_URL is not set. Running in no-database mode.");
+  dbClient = null;
+}
+
+// Export the client. It might be null.
+export const db = dbClient;
+
+// ⬆️ MODIFICATION END ⬆️

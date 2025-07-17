@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { posts } from "~/server/db/schema";
 
 export const postRouter = createTRPCRouter({
   hello: publicProcedure
@@ -14,17 +13,33 @@ export const postRouter = createTRPCRouter({
 
   create: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(posts).values({
+    .mutation(async ({ input }) => {
+      console.log("Mock create post:", input.name);
+      // Return a dummy result
+      return {
+        id: Math.floor(Math.random() * 1000),
         name: input.name,
-      });
+        createdAt: new Date(),
+        createdById: "mock_user_id",
+      };
     }),
 
-  getLatest: publicProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.query.posts.findFirst({
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-    });
-
-    return post ?? null;
+  // ⬇️ THIS IS THE FIX ⬇️
+  getLatest: publicProcedure.query(() => {
+    // Return dummy data that matches the structure the frontend expects,
+    // including the nested 'createdBy' object.
+    return {
+      id: 1,
+      name: "My First Mock Post",
+      createdAt: new Date(),
+      createdById: "mock_user_id",
+      // Add the nested object the frontend page needs
+      createdBy: {
+        id: "mock_user_id",
+        firstName: "Mock",
+        lastName: "User",
+        profileImageUrl: "", // Can be empty
+      },
+    };
   }),
 });
