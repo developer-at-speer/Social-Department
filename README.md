@@ -21,3 +21,4 @@ For a simple demonstration of the functionality, you can run the project locally
 Notice that if you try to visit the dashboard without being logged in, you are not permitted to do so.
 
 For more information about how tRPC, Drizzle, and Clerk work, you can start by checking the files in `src/server/`, or the React components in `src/components`.
+
