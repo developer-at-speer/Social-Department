@@ -6,10 +6,12 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "~/components/common/Logo";
 import { Button } from "~/components/ui/button";
 import { useAuth, UserButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isSignedIn, isLoaded } = useAuth();
+  const pathname = usePathname();
 
   const navLinks = [
     { href: "#features", label: "Features" },
@@ -41,9 +43,11 @@ export function Header() {
         <div className="hidden md:flex items-center space-x-2">
           {isLoaded && isSignedIn ? (
             <>
-              <Button variant="outline" className="text-white border-white hover:bg-white/20" asChild>
-                <Link href="/dashboard" className="text-white">Dashboard</Link>
-              </Button>
+              {pathname !== "/dashboard" && (
+                <Button variant="outline" className="text-black border-white hover:bg-white/20" asChild>
+                  <Link href="/dashboard" className="text-black">Dashboard</Link>
+                </Button>
+              )}
               <UserButton 
                 afterSignOutUrl="/"
                 appearance={{
@@ -92,11 +96,13 @@ export function Header() {
             <div className="border-t border-border/40 pt-4 space-y-2">
               {isLoaded && isSignedIn ? (
                 <>
-                  <Button variant="outline" className="w-full text-white border-white hover:bg-white/20" asChild>
-                    <Link href="/dashboard" className="text-white" onClick={() => setMobileMenuOpen(false)}>
-                      Dashboard
-                    </Link>
-                  </Button>
+                  {pathname !== "/dashboard" && (
+                    <Button variant="outline" className="w-full text-black border-white hover:bg-white/20" asChild>
+                      <Link href="/dashboard" className="text-black" onClick={() => setMobileMenuOpen(false)}>
+                        Dashboard
+                      </Link>
+                    </Button>
+                  )}
                   <Link href="/user-profile" onClick={() => setMobileMenuOpen(false)} className="block text-center">
                     <Button variant="default" className="w-full bg-yellow-400 text-black hover:bg-yellow-500">
                       Profile
@@ -105,8 +111,8 @@ export function Header() {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" className="w-full text-white border-white hover:bg-white/20" asChild>
-                    <Link href="/sign-in" className="text-white" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" className="w-full text-black border-white hover:bg-white/20" asChild>
+                    <Link href="/sign-in" className="text-black" onClick={() => setMobileMenuOpen(false)}>
                       Sign In
                     </Link>
                   </Button>
