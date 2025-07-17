@@ -26,16 +26,16 @@ export default async function DashboardPage() {
   };
 
   const userInitials = getInitials(
-    user.firstName && user.lastName
+    (user.firstName ?? user.lastName)
       ? `${user.firstName} ${user.lastName}`
-      : user.username || user.emailAddresses[0]?.emailAddress,
+      : (user.username ?? user.emailAddresses[0]?.emailAddress),
   );
 
   return (
     <>
       <div className="mb-6 flex items-center">
         <Avatar className="mr-4 h-12 w-12">
-          <AvatarImage src={user.imageUrl} alt={user.username || "User"} />
+          <AvatarImage src={user.imageUrl} alt={user.username ?? "User"} />
           <AvatarFallback className="bg-yellow-400 text-black">
             {userInitials}
           </AvatarFallback>
@@ -48,14 +48,14 @@ export default async function DashboardPage() {
           <CardHeader>
             <CardTitle>
               Welcome,{" "}
-              {user.firstName ||
-                user.username ||
+              {user.firstName ??
+                user.username ??
                 user.emailAddresses[0]?.emailAddress}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-gray-200">
-              This is your dashboard. It's a protected page that only
+              This is your dashboard. It&apos;s a protected page that only
               authenticated users can access.
             </p>
           </CardContent>

@@ -1,3 +1,4 @@
+"use client";
 // src/app/sign-in/[[...sign-in]]/page.tsx
 import { SignIn } from "@clerk/nextjs";
 
@@ -6,6 +7,7 @@ export default function SignInPage() {
     <div className="flex justify-center">
       <div className="w-full max-w-md">
         <SignIn
+          path="/sign-in"
           appearance={{
             elements: {
               formButtonPrimary: "bg-yellow-400 text-black hover:bg-yellow-500",
