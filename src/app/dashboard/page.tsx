@@ -1,9 +1,10 @@
 // src/app/dashboard/page.tsx
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Header } from "~/components/landing-page/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { ShowsList } from "~/components/show/ShowsList";
+import { CreateShowCard } from "~/components/show/CreateShowCard";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -59,6 +60,9 @@ export default async function DashboardPage() {
             </p>
           </CardContent>
         </Card>
+        <div />
+        <CreateShowCard />
+        <ShowsList />
       </div>
     </>
   );

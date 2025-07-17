@@ -6,6 +6,7 @@ import {
 } from "../trpc";
 import { shows } from "~/server/db/schema";
 import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 
 export const showRouter = createTRPCRouter({
   list: publicProcedure.query(async ({ ctx }) => {
@@ -47,5 +48,22 @@ export const showRouter = createTRPCRouter({
       return {
         show: show[0],
       };
+    }),
+
+  remove: authenticatedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const show = await ctx.db?.delete(shows).where(eq(shows.id, input.id));
+
+      if (!show) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          cause: "Show not found",
+        });
+      }
     }),
 });
