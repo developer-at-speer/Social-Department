@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
-import { TRPCReactProvider } from "~/trpc/react";
+import { Providers } from "./_components/Providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

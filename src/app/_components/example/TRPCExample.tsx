@@ -13,6 +13,7 @@ function ErrorMessage({ message }: ErrorMessageProps) {
 export function TRPCExample() {
   const { data: exampleMessages, error: messagesError } =
     api.example.list.useQuery();
+
   const { data: secretMessages, error: secretMessagesError } =
     api.example.listSecret.useQuery();
 

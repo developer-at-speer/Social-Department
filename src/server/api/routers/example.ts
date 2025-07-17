@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import {
   createTRPCRouter,
   publicProcedure,
@@ -7,7 +5,7 @@ import {
 } from "~/server/api/trpc";
 
 export const exampleRouter = createTRPCRouter({
-  list: publicProcedure.query(() => {
+  list: publicProcedure.query(({ ctx }) => {
     const exampleMessageCount = 10;
 
     const messages = Array.from(
@@ -23,7 +21,7 @@ export const exampleRouter = createTRPCRouter({
     };
   }),
 
-  listSecret: authenticatedProcedure.query(() => {
+  listSecret: authenticatedProcedure.query(({ ctx }) => {
     const exampleMessageCount = 10;
 
     const messages = Array.from(
