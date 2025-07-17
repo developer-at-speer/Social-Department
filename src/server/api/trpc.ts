@@ -6,11 +6,14 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { auth } from "@clerk/nextjs/server";
+import { initTRPC, TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { db } from "~/server/db";
+import { users } from "../db/schema";
 
 /**
  * 1. CONTEXT
@@ -26,6 +29,7 @@ import { db } from "~/server/db";
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
+    auth: await auth(),
     db,
     ...opts,
   };
@@ -104,3 +108,55 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+
+/**
+ * Authenticated procedure
+ *
+ * This is the base piece you use to build new queries and mutations on your tRPC API. It
+ * guarantees that a user querying is authorized, and you can access user session data.
+ *
+ * NOTE: To interop correctly with Clerk, we must pass the request object to `auth()`.
+ * This requires that the tRPC context includes the request (req) object.
+ *
+ * You must ensure your tRPC context includes the raw request (e.g., from Next.js API handler or fetch event).
+ * For example, in your context creation: { req, ... }
+ */
+const authMiddleware = t.middleware(async ({ ctx, next }) => {
+  const userId = ctx.auth.userId;
+
+  if (!userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      cause: "User is not authorized to access this resource.",
+    });
+  }
+
+  const user =
+    (await ctx.db?.query.users.findFirst({
+      where: eq(users.clerkId, userId),
+    })) ??
+    (await ctx.db
+      ?.insert(users)
+      .values({
+        clerkId: userId,
+      })
+      .returning());
+
+  const userData = Array.isArray(user) ? user[0] : user;
+
+  if (!userData) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      cause: "User is not authorized to access this resource.",
+    });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      auth: ctx.auth,
+      user: userData,
+    },
+  });
+});
+export const authenticatedProcedure = publicProcedure.use(authMiddleware);
