@@ -1,7 +1,7 @@
 // src/app/dashboard/page.tsx
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { Header } from "~/components/landing/Header";
+import { Header } from "~/components/landing-page/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
