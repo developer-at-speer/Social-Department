@@ -44,7 +44,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <Card className="border-white/20 bg-white/10 text-white backdrop-blur-sm">
+        <Card className="border-white/20 bg-white/10 text-white backdrop-blur-sm md:col-span-2">
           <CardHeader>
             <CardTitle>
               Welcome,{" "}
@@ -60,7 +60,6 @@ export default async function DashboardPage() {
             </p>
           </CardContent>
         </Card>
-        <div />
         <CreateShowCard />
         <ShowsList />
       </div>
